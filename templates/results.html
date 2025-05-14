@@ -5,7 +5,10 @@
 
 <h2 style="margin-bottom: 10px;">Wyniki ogólne – dynamiczne ogłoszenie</h2>
 
-<button onclick="startShow()" class="button-secondary">🎉 Startuj Show!</button>
+<div style="text-align: center;">
+  <button onclick="startShow()" class="button-secondary">🎉 Startuj Show!</button>
+</div>
+
 
 <div id="results-show" class="results-grid" style="margin-top: 30px; max-width: 900px; margin-inline: auto;"></div>
 
@@ -143,7 +146,11 @@
 
 <!-- Zawartość sekcji "Jak głosowali inni" -->
 <h2 style="margin-top: 40px;">Szczegóły głosowania</h2>
-<button onclick="toggleDetails()" style="margin-bottom: 10px;">Zobacz jak głosowali inni</button>
+
+<div style="text-align: center;">
+  <button onclick="toggleDetails()" class="button-secondary">Zobacz jak głosowali inni</button>
+</div>
+
 <div id="vote-details" style="display: none; font-size: 0.9em;">
   {% for vote in all_votes %}
     <p><strong>{{ vote.name }}</strong>:</p>
