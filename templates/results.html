@@ -3,68 +3,141 @@
 {% block content %}
 <h1>Wyniki głosowania – Grand Final</h1>
 
-<h2>Wyniki ogólne</h2>
-<ol>
-  {% for artist, score in ranked %}
-    <li><strong>{{ artist }}</strong>: {{ score }} pkt</li>
-  {% endfor %}
-</ol>
+<h2 style="margin-bottom: 10px;">Wyniki ogólne – dynamiczne ogłoszenie</h2>
 
-<h2 style="margin-top: 40px;">Szczegóły głosowania</h2>
-<button onclick="toggleDetails()" style="margin-bottom: 10px;">Zobacz jak głosowali inni</button>
-<div id="vote-details" style="display: none; font-size: 0.9em;">
-  {% for vote in all_votes %}
-    <p><strong>{{ vote.name }}</strong>:</p>
-    <ul>
-      {% for artist, points in vote.votes|dictsort(false, 'value')|reverse %}
-        <li>{{ artist }} – {{ points }} pkt</li>
-      {% endfor %}
-    </ul>
-  {% endfor %}
-</div>
+<button onclick="startShow()" class="button-secondary">🎉 Startuj Show!</button>
+
+<div id="results-show" class="results-grid" style="margin-top: 30px; max-width: 900px; margin-inline: auto;"></div>
 
 <script>
-  function toggleDetails() {
-    const details = document.getElementById("vote-details");
-    details.style.display = details.style.display === "none" ? "block" : "none";
+  let ranked = {{ ranked | tojson | safe }};
+  ranked.sort((a, b) => b[1] - a[1]); // sortuj od największej liczby punktów
+
+  const container = document.getElementById('results-show');
+
+  function delay(ms) {
+      return new Promise(resolve => setTimeout(resolve, ms));
+  }
+
+  async function startShow() {
+      container.innerHTML = "";
+
+      const total = ranked.length;
+      const entries = [];
+
+      // Utwórz wszystkie wpisy z numeracją miejsc
+      for (let i = 0; i < total; i++) {
+          const [artist, score] = ranked[i];
+          const placeNumber = i + 1;
+
+          const entry = document.createElement("div");
+          entry.className = "result-entry hidden";
+
+          if (i === 0) entry.classList.add("gold");
+          else if (i === 1) entry.classList.add("silver");
+          else if (i === 2) entry.classList.add("bronze");
+
+          entry.innerHTML = `
+              <div class="place">#${placeNumber}</div>
+              <div class="points">${score} pkt</div>
+              <div class="name">${artist}</div>
+          `;
+
+          entries.push(entry);
+      }
+
+      // Podział: miejsca 1–13 do lewej, 14–26 do prawej
+      const midpoint = Math.ceil(entries.length / 2);
+      const leftCol = entries.slice(0, midpoint);
+      const rightCol = entries.slice(midpoint);
+
+      // Najpierw dodaj do DOMu – najpierw lewa kolumna, potem prawa (z góry do dołu)
+      const maxLen = Math.max(leftCol.length, rightCol.length);
+      for (let i = 0; i < maxLen; i++) {
+          if (leftCol[i]) container.appendChild(leftCol[i]);
+          if (rightCol[i]) container.appendChild(rightCol[i]);
+      }
+
+      // Animacja: najpierw prawa kolumna od dołu do góry
+      for (let i = rightCol.length - 1; i >= 0; i--) {
+          await delay(700);
+          rightCol[i].classList.remove("hidden");
+      }
+
+      // potem lewa kolumna od dołu do góry
+      for (let i = leftCol.length - 1; i >= 0; i--) {
+          await delay(700);
+          leftCol[i].classList.remove("hidden");
+      }
   }
 </script>
 
-<h2>Zwycięzcy wg płci</h2>
-{% if results_by_gender['kobieta'] %}
-  <h3>Kobiety:</h3>
-  <ul>
-    {% for artist, points in results_by_gender['kobieta'] %}
-      <li><strong>{{ artist }}</strong>: {{ points }} pkt</li>
-    {% endfor %}
-  </ul>
-{% else %}
-  <p>Brak wyników dla kobiet.</p>
-{% endif %}
+<style>
+  .results-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+  }
 
-{% if results_by_gender['mężczyzna'] %}
-  <h3>Mężczyźni:</h3>
-  <ul>
-    {% for artist, points in results_by_gender['mężczyzna'] %}
-      <li><strong>{{ artist }}</strong>: {{ points }} pkt</li>
-    {% endfor %}
-  </ul>
-{% else %}
-  <p>Brak wyników dla mężczyzn.</p>
-{% endif %}
+  .result-entry {
+    background: linear-gradient(90deg, #8c52ffaa, #222);
+    border-radius: 20px;
+    padding: 15px 20px;
+    box-shadow: 0 0 20px #9b4dffaa;
+    font-size: 1.1em;
+    color: white;
+    opacity: 1;
+    transform: translateY(0);
+    transition: opacity 0.8s ease, transform 0.8s ease;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
 
-<h2>Zwycięzcy wg miast</h2>
-{% for city in ['Gdańsk', 'Sopot', 'Gdynia'] %}
-  {% if results_by_city[city] %}
-    <h3>{{ city }}:</h3>
-    <ul>
-      {% for artist, points in results_by_city[city] %}
-        <li><strong>{{ artist }}</strong>: {{ points }} pkt</li>
-      {% endfor %}
-    </ul>
-  {% else %}
-    <p>Brak wyników dla {{ city }}.</p>
-  {% endif %}
-{% endfor %}
+  .result-entry.hidden {
+    opacity: 0;
+    transform: translateY(20px);
+  }
 
+  .result-entry .place {
+    font-weight: bold;
+    font-size: 1.1em;
+    color: #aaa;
+  }
+
+  .result-entry .points {
+    font-weight: bold;
+    font-size: 1.4em;
+    color: #ffd700;
+    text-shadow: 0 0 10px #ffd700aa;
+  }
+
+  .result-entry .name {
+    font-size: 1em;
+  }
+
+  .result-entry.gold {
+    background: linear-gradient(90deg, #ffdd57, #f5c000);
+    box-shadow: 0 0 30px #ffd700cc;
+    color: black;
+  }
+
+  .result-entry.silver {
+    background: linear-gradient(90deg, #e0e0e0, #b0b0b0);
+    box-shadow: 0 0 25px #ccccccaa;
+    color: black;
+  }
+
+  .result-entry.bronze {
+    background: linear-gradient(90deg, #cd7f32, #a05a2c);
+    box-shadow: 0 0 25px #cd7f32aa;
+    color: white;
+  }
+
+  @media (max-width: 768px) {
+    .results-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
 {% endblock %}
