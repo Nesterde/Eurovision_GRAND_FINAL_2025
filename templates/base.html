@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8">
+  <title>{% block title %}Głosowanie{% endblock %}</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      background: linear-gradient(135deg, #0f0c29, #302b63, #24243e) !important;
+      font-family: 'Montserrat', sans-serif;
+      color: white;
+      padding: 20px;
+      margin: 0;
+      position: relative;
+      z-index: 1;
+      overflow-x: hidden;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    .logo-container {
+      width: 100%;
+      height: 30vh; /* pokazuje tylko 60% środka obrazu */
+      overflow: hidden;
+    }
+
+    .logo-container img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center;
+      display: block;
+      filter: drop-shadow(0 0 10px #9147ff);
+    }
+
+    h1, h2 {
+      text-align: center;
+      color: #ffffff;
+      text-shadow: 0 0 10px #9147ff;
+    }
+
+    form {
+      max-width: 700px;
+      margin: 0 auto;
+      background: rgba(255, 255, 255, 0.05);
+      padding: 30px;
+      border-radius: 16px;
+      box-shadow: 0 0 20px #8c52ff;
+      z-index: 2;
+      position: relative;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 10px;
+      margin-top: 5px;
+      margin-bottom: 15px;
+      background-color: #222;
+      color: white;
+      border: 1px solid #444;
+      border-radius: 8px;
+    }
+
+    button {
+      width: 100%;
+      padding: 12px;
+      background: linear-gradient(to right, #9b4dff, #661fff);
+      border: none;
+      color: white;
+      font-weight: bold;
+      font-size: 16px;
+      border-radius: 10px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: linear-gradient(to right, #b56eff, #7c2fff);
+    }
+
+    .button-secondary {
+     display: inline-block;
+     margin-top: 20px;
+     padding: 12px 24px;
+     background: linear-gradient(to right, #00c6ff, #0072ff);
+     color: white;
+     border: none;
+     border-radius: 10px;
+     font-size: 16px;
+     cursor: pointer;
+     text-decoration: none;
+     text-align: center;
+    }
+
+    .button-secondary:hover {
+      background: linear-gradient(to right, #33d6ff, #338aff);
+    }
+
+    .info-box {
+      background-color: rgba(255, 255, 255, 0.05);
+      padding: 15px;
+      border-radius: 10px;
+      box-shadow: 0 0 12px #7a4fe6;
+      margin-bottom: 30px;
+    }
+
+    .heart {
+      position: fixed;
+      top: 50%;
+      width: 200px;
+      height: 200px;
+      background-size: contain;
+      background-repeat: no-repeat;
+      background-position: center;
+      opacity: 0.05;
+      animation: pulse 5s infinite;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    .heart.left {
+      left: 5%;
+      background-image: url('https://www.rmf.fm/_files/Short_foto/02877e67efb952726a8c7203291bb748.jpg') !important;
+      transform: translateY(-50%);
+    }
+
+    .heart.right {
+      right: 5%;
+      background-image: url('https://www.rmf.fm/_files/Short_foto/02877e67efb952726a8c7203291bb748.jpg') !important;
+      transform: translateY(-50%);
+    }
+
+    @keyframes pulse {
+      0% { opacity: 0.05; transform: translateY(-50%) scale(1); }
+      50% { opacity: 0.09; transform: translateY(-50%) scale(2); }
+      100% { opacity: 0.05; transform: translateY(-50%) scale(1); }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <!-- Logo Eurowizji 2025 -->
+    <div class="logo-container">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/6/65/2025_Avroviziya_Mahn%C4%B1_M%C3%BCsabiq%C9%99si_r%C9%99smi_loqosu.jpg" alt="Eurowizja 2025 Logo">
+    </div>
+  </header>
+
+  <!-- Tło z sercami po bokach -->
+  <div class="heart left"></div>
+  <div class="heart right"></div>
+
+  {% block content %}{% endblock %}
+</body>
+</html>

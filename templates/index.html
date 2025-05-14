@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+{% block title %}Głosowanie – Grand Final{% endblock %}
+{% block content %}
+<h1>Oddaj swój głos w </h1>
+
+<h1>GRAND FINAL - Eurovision Song Contest Basel 2025 </h1>
+
+<h2>Baw się razem z nami! </h2>
+
+<h2>Wybierz 10 swoich faworytów :) </h2>
+
+<form method="post">
+  <label>Imię: <input type="text" name="name" required></label><br><br>
+
+  <label>Płeć:
+    <select name="gender" required>
+      <option value="">-- Wybierz --</option>
+      <option value="kobieta">Kobieta</option>
+      <option value="mężczyzna">Mężczyzna</option>
+    </select>
+  </label><br><br>
+
+  <label>Miasto:
+    <select name="city" required>
+      <option value="">-- Wybierz --</option>
+      <option value="Gdańsk">Gdańsk</option>
+      <option value="Sopot">Sopot</option>
+      <option value="Gdynia">Gdynia</option>
+    </select>
+  </label><br><br>
+
+  {% set points_labels = [12, 10, 8, 7, 6, 5, 4, 3, 2, 1] %}
+  {% for i in range(10) %}
+    {% set point = points_labels[i] %}
+    <label>{{ i+1 }} miejsce i {{ point }} {{ 'point' if point == 1 else 'points' }} go to:
+      <select name="artist" class="artist-select" required>
+        <option value="">-- Wybierz artystę --</option>
+        {% for artist in artists %}
+          <option value="{{ artist }}">{{ artist }}</option>
+        {% endfor %}
+      </select>
+    </label><br>
+  {% endfor %}
+  
+  <br><button type="submit">Zatwierdź głosy</button>
+</form>
+
+<div style="text-align: center; margin-top: 30px;">
+  <a href="{{ url_for('results') }}" class="button-secondary">
+    🔍 Sprawdź wyniki głosowania
+  </a>
+</div>
+
+<script>
+  const selects = document.querySelectorAll('.artist-select');
+
+  function updateOptions() {
+    const selected = Array.from(selects).map(s => s.value).filter(v => v);
+    selects.forEach(select => {
+      Array.from(select.options).forEach(option => {
+        if (option.value === "") return;
+        option.hidden = selected.includes(option.value) && select.value !== option.value;
+      });
+    });
+  }
+
+  selects.forEach(select => {
+    select.addEventListener('change', updateOptions);
+  });
+
+  updateOptions();
+</script>
+{% endblock %}

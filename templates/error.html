@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block title %}Błąd głosowania{% endblock %}
+{% block content %}
+  <h1>😕 Ups! Coś poszło nie tak</h1>
+  <p style="text-align: center; font-size: 18px; margin-top: 20px;">
+    {{ message }}
+  </p>
+  <div style="text-align: center; margin-top: 30px;">
+    <a href="{{ url_for('index') }}">
+      <button>🔙 Wróć do głosowania</button>
+    </a>
+  </div>
+{% endblock %}
