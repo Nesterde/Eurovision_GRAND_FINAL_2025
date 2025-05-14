@@ -140,4 +140,65 @@
     }
   }
 </style>
+
+<!-- Zawartość sekcji "Jak głosowali inni" -->
+<h2 style="margin-top: 40px;">Szczegóły głosowania</h2>
+<button onclick="toggleDetails()" style="margin-bottom: 10px;">Zobacz jak głosowali inni</button>
+<div id="vote-details" style="display: none; font-size: 0.9em;">
+  {% for vote in all_votes %}
+    <p><strong>{{ vote.name }}</strong>:</p>
+    <ul>
+      {% for artist, points in vote.votes|dictsort(false, 'value')|reverse %}
+        <li>{{ artist }} – {{ points }} pkt</li>
+      {% endfor %}
+    </ul>
+  {% endfor %}
+</div>
+
+<script>
+  function toggleDetails() {
+    const details = document.getElementById("vote-details");
+    details.style.display = details.style.display === "none" ? "block" : "none";
+  }
+</script>
+
+<!-- Zwycięzcy według płci -->
+<h2>Zwycięzcy wg płci</h2>
+{% if results_by_gender['kobieta'] %}
+  <h3>Kobiety:</h3>
+  <ul>
+    {% for artist, points in results_by_gender['kobieta'] %}
+      <li><strong>{{ artist }}</strong>: {{ points }} pkt</li>
+    {% endfor %}
+  </ul>
+{% else %}
+  <p>Brak wyników dla kobiet.</p>
+{% endif %}
+
+{% if results_by_gender['mężczyzna'] %}
+  <h3>Mężczyźni:</h3>
+  <ul>
+    {% for artist, points in results_by_gender['mężczyzna'] %}
+      <li><strong>{{ artist }}</strong>: {{ points }} pkt</li>
+    {% endfor %}
+  </ul>
+{% else %}
+  <p>Brak wyników dla mężczyzn.</p>
+{% endif %}
+
+<!-- Zwycięzcy według miast -->
+<h2>Zwycięzcy wg miast</h2>
+{% for city in ['Gdańsk', 'Sopot', 'Gdynia'] %}
+  {% if results_by_city[city] %}
+    <h3>{{ city }}:</h3>
+    <ul>
+      {% for artist, points in results_by_city[city] %}
+        <li><strong>{{ artist }}</strong>: {{ points }} pkt</li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p>Brak wyników dla {{ city }}.</p>
+  {% endif %}
+{% endfor %}
+
 {% endblock %}
